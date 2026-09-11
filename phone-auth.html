@@ -3,119 +3,861 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>LYRx Phone Verification</title>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+
       font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
-      background: radial-gradient(circle at top, #2a1740 0%, #120d19 44%, #09070d 100%);
-      color: #fff; padding: 24px;
+
+      background:
+        radial-gradient(circle at top, #2a1740 0%, #120d19 44%, #09070d 100%);
+
+      color: #ffffff;
     }
+
     .card {
-      width: min(560px, 100%); padding: 34px; border-radius: 24px;
-      background: rgba(25, 18, 35, .94); border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 24px 80px rgba(0,0,0,.42); text-align: center;
+      width: min(560px, 100%);
+      padding: 34px;
+      border-radius: 24px;
+
+      background: rgba(25, 18, 35, .94);
+      border: 1px solid rgba(255, 255, 255, .10);
+
+      box-shadow: 0 24px 80px rgba(0,0,0,.42);
+
+      text-align: center;
     }
+
     .mark {
-      width: 66px; height: 66px; margin: 0 auto 18px; display: grid; place-items: center;
-      border-radius: 20px; background: linear-gradient(135deg,#8d5cff,#c65cff);
-      font-size: 29px; font-weight: 800; box-shadow: 0 14px 34px rgba(145,87,255,.30);
+      width: 66px;
+      height: 66px;
+
+      margin: 0 auto 18px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 20px;
+
+      background:
+        linear-gradient(135deg, #8d5cff, #c65cff);
+
+      font-size: 29px;
+      font-weight: 800;
+
+      box-shadow:
+        0 14px 34px rgba(145, 87, 255, .30);
     }
-    h1 { margin: 0 0 10px; font-size: 28px; }
-    p { margin: 0 0 18px; color: #cfc7d8; line-height: 1.6; }
-    .phone { color: #fff; font-weight: 700; font-size: 18px; margin-bottom: 20px; }
-    #recaptcha-container { display: flex; justify-content: center; margin: 18px 0; min-height: 78px; }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+
+    p {
+      margin: 0 0 18px;
+      color: #cfc7d8;
+      line-height: 1.6;
+    }
+
+    .phone {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      margin-bottom: 18px;
+      padding: 7px 12px;
+
+      border-radius: 999px;
+
+      background: rgba(145, 87, 255, .12);
+      border: 1px solid rgba(145, 87, 255, .32);
+
+      color: #d8c7ff;
+
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #recaptcha-container {
+      display: flex;
+      justify-content: center;
+
+      min-height: 78px;
+
+      margin: 18px 0;
+    }
+
     button {
-      width: 100%; border: 0; border-radius: 13px; padding: 14px 18px;
-      font-size: 15px; font-weight: 700; cursor: pointer; color: #fff;
-      background: linear-gradient(135deg,#7d4dff,#b454ff);
+      width: 100%;
+
+      border: 0;
+      border-radius: 13px;
+
+      padding: 14px 18px;
+
+      font-size: 15px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      color: #ffffff;
+
+      background:
+        linear-gradient(135deg, #7d4dff, #b454ff);
+
+      transition:
+        transform .18s ease,
+        opacity .18s ease,
+        box-shadow .18s ease;
     }
-    button:disabled { opacity: .55; cursor: default; }
-    .status { min-height: 48px; margin-top: 16px; color: #d7cfdf; font-size: 14px; }
-    .small { font-size: 12px; color: #938a9f; margin-top: 14px; }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+
+      box-shadow:
+        0 12px 28px rgba(139, 79, 255, .22);
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: default;
+    }
+
+    .secondary {
+      margin-top: 10px;
+
+      background: transparent;
+
+      border: 1px solid rgba(255, 255, 255, .12);
+
+      color: #d8cfe1;
+    }
+
+    .status {
+      min-height: 50px;
+
+      margin-top: 16px;
+
+      color: #d7cfdf;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .status.success {
+      color: #9cf5c7;
+    }
+
+    .status.error {
+      color: #ffb3c1;
+    }
+
+    .status.info {
+      color: #d7cfdf;
+    }
+
+    .help-box {
+      display: none;
+
+      margin-top: 16px;
+      padding: 14px 16px;
+
+      border-radius: 14px;
+
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.08);
+
+      text-align: left;
+
+      color: #bdb4c6;
+
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .help-box strong {
+      color: #ffffff;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #938a9f;
+
+      margin-top: 16px;
+
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
+
 <body>
+
   <main class="card">
+
     <div class="mark">L</div>
+
     <h1>LYRx Phone Verification</h1>
-    <p>Complete Firebase's security check to request your verification code.</p>
+
+    <p>
+      Complete Firebase's security check to request your verification code.
+    </p>
+
+    <div class="badge">
+      🧪 Development / Demo Mode
+    </div>
+
     <div id="phone" class="phone"></div>
+
     <div id="recaptcha-container"></div>
-    <button id="sendButton" type="button">Send OTP</button>
-    <div id="status" class="status">Preparing secure verification…</div>
-    <div class="small">After the request succeeds, this page will return you to the LYRx desktop app.</div>
+
+    <button id="sendButton" type="button">
+      Send OTP
+    </button>
+
+    <button
+      id="retryButton"
+      class="secondary hidden"
+      type="button"
+    >
+      Retry Verification
+    </button>
+
+    <button
+      id="backButton"
+      class="secondary"
+      type="button"
+    >
+      Back to LYRx
+    </button>
+
+    <div
+      id="status"
+      class="status info"
+    >
+      Preparing secure verification…
+    </div>
+
+    <div
+      id="helpBox"
+      class="help-box"
+    >
+      <strong>Demo mode note:</strong><br>
+      LYRx currently uses Firebase Phone Auth in development/testing mode.
+      Firebase test numbers work without sending a real SMS.
+      Real SMS delivery can be enabled later by activating Firebase billing.
+    </div>
+
+    <div class="small">
+      After verification starts successfully,
+      this page will return you to the LYRx desktop app.
+    </div>
+
   </main>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-    const params = new URLSearchParams(window.location.search);
-    const phone = params.get("phone") || "";
-    const apiKey = params.get("apiKey") || "";
-    const projectId = params.get("projectId") || "";
-    const authDomain = params.get("authDomain") || "";
-    const callback = params.get("callback") || "";
-    const state = params.get("state") || "";
+    import {
+      initializeApp
+    } from
+      "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 
-    const phoneEl = document.getElementById("phone");
-    const statusEl = document.getElementById("status");
-    const sendButton = document.getElementById("sendButton");
-    phoneEl.textContent = phone || "Phone number missing";
+    import {
+      getAuth,
+      RecaptchaVerifier,
+      signInWithPhoneNumber
+    } from
+      "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-    function fail(message) {
+
+    // -----------------------------------------
+    // URL PARAMETERS
+    // -----------------------------------------
+
+    const params =
+      new URLSearchParams(window.location.search);
+
+    const phone =
+      params.get("phone") || "";
+
+    const apiKey =
+      params.get("apiKey") || "";
+
+    const projectId =
+      params.get("projectId") || "";
+
+    const authDomain =
+      params.get("authDomain") || "";
+
+    const callback =
+      params.get("callback") || "";
+
+    const state =
+      params.get("state") || "";
+
+
+    // -----------------------------------------
+    // DOM
+    // -----------------------------------------
+
+    const phoneEl =
+      document.getElementById("phone");
+
+    const statusEl =
+      document.getElementById("status");
+
+    const sendButton =
+      document.getElementById("sendButton");
+
+    const retryButton =
+      document.getElementById("retryButton");
+
+    const backButton =
+      document.getElementById("backButton");
+
+    const helpBox =
+      document.getElementById("helpBox");
+
+
+    phoneEl.textContent =
+      phone || "Phone number missing";
+
+
+    // -----------------------------------------
+    // STATE
+    // -----------------------------------------
+
+    let auth = null;
+
+    let verifier = null;
+
+    let verifierReady = false;
+
+
+    // -----------------------------------------
+    // STATUS HELPERS
+    // -----------------------------------------
+
+    function setStatus(message, type = "info") {
+
       statusEl.textContent = message;
-      sendButton.disabled = false;
+
+      statusEl.className =
+        `status ${type}`;
     }
 
-    if (!phone || !apiKey || !projectId || !authDomain || !callback || !state) {
-      fail("The LYRx verification request is incomplete. Return to the app and try again.");
-      sendButton.disabled = true;
-    } else {
-      try {
-        const app = initializeApp({ apiKey, authDomain, projectId });
-        const auth = getAuth(app);
-        auth.useDeviceLanguage();
 
-        const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-          size: "normal",
-          callback: () => {
-            statusEl.textContent = "Security check complete. Click Send OTP.";
-          },
-          "expired-callback": () => {
-            statusEl.textContent = "Security check expired. Complete it again.";
-          }
-        });
+    function setLoading(isLoading) {
 
-        await verifier.render();
-        statusEl.textContent = "Complete the reCAPTCHA, then click Send OTP.";
+      sendButton.disabled = isLoading;
 
-        sendButton.addEventListener("click", async () => {
-          sendButton.disabled = true;
-          statusEl.textContent = "Requesting OTP from Firebase…";
+      retryButton.disabled = isLoading;
+    }
 
-          try {
-            const confirmation = await signInWithPhoneNumber(auth, phone, verifier);
-            statusEl.textContent = "OTP requested. Returning to LYRx…";
 
-            const target = new URL(callback);
-            target.searchParams.set("state", state);
-            target.searchParams.set("verification_id", confirmation.verificationId);
-            window.location.replace(target.toString());
-          } catch (error) {
-            console.error(error);
-            const message = error?.message || "Firebase phone verification failed.";
-            fail(message);
-            try { verifier.clear(); } catch (_) {}
-          }
-        });
-      } catch (error) {
-        console.error(error);
-        fail(error?.message || "Could not initialize Firebase Phone Auth.");
+    // -----------------------------------------
+    // VALIDATION
+    // -----------------------------------------
+
+    function requestIsValid() {
+
+      return Boolean(
+        phone &&
+        apiKey &&
+        projectId &&
+        authDomain &&
+        callback &&
+        state
+      );
+    }
+
+
+    // -----------------------------------------
+    // RECAPTCHA CLEANUP
+    // -----------------------------------------
+
+    function clearVerifier() {
+
+      if (verifier) {
+
+        try {
+          verifier.clear();
+        }
+        catch (_) {}
+
+      }
+
+      verifier = null;
+
+      verifierReady = false;
+
+      const container =
+        document.getElementById(
+          "recaptcha-container"
+        );
+
+      if (container) {
+        container.innerHTML = "";
       }
     }
+
+
+    // -----------------------------------------
+    // CREATE RECAPTCHA
+    // -----------------------------------------
+
+    async function createVerifier() {
+
+      clearVerifier();
+
+      setStatus(
+        "Preparing Firebase security check…",
+        "info"
+      );
+
+      verifier =
+        new RecaptchaVerifier(
+          auth,
+          "recaptcha-container",
+          {
+
+            size: "normal",
+
+            callback: () => {
+
+              verifierReady = true;
+
+              setStatus(
+                "Security check complete. Click Send OTP.",
+                "success"
+              );
+
+            },
+
+            "expired-callback": () => {
+
+              verifierReady = false;
+
+              setStatus(
+                "Security check expired. Please complete it again.",
+                "error"
+              );
+
+            }
+
+          }
+        );
+
+
+      await verifier.render();
+
+
+      setStatus(
+        "Complete the reCAPTCHA, then click Send OTP.",
+        "info"
+      );
+
+    }
+
+
+    // -----------------------------------------
+    // FRIENDLY FIREBASE ERRORS
+    // -----------------------------------------
+
+    function friendlyFirebaseError(error) {
+
+      const code =
+        error?.code || "";
+
+      console.error(
+        "LYRx Firebase Phone Auth Error:",
+        error
+      );
+
+
+      switch (code) {
+
+        case "auth/billing-not-enabled":
+
+          helpBox.style.display = "block";
+
+          return (
+            "Real SMS is disabled in the current demo environment. " +
+            "Use a Firebase test phone number for the LYRx demo."
+          );
+
+
+        case "auth/operation-not-allowed":
+
+          return (
+            "Phone authentication or this SMS region is not enabled " +
+            "in Firebase."
+          );
+
+
+        case "auth/invalid-phone-number":
+
+          return (
+            "Invalid phone number. " +
+            "Please use international format, for example +919876543210."
+          );
+
+
+        case "auth/too-many-requests":
+
+          return (
+            "Too many verification attempts. " +
+            "Please wait and try again later."
+          );
+
+
+        case "auth/quota-exceeded":
+
+          return (
+            "Firebase SMS quota has been reached. " +
+            "Use the configured test phone number during development."
+          );
+
+
+        case "auth/captcha-check-failed":
+
+          return (
+            "Security verification failed. " +
+            "Please complete the reCAPTCHA again."
+          );
+
+
+        case "auth/network-request-failed":
+
+          return (
+            "Network error. Check your internet connection and try again."
+          );
+
+
+        case "auth/internal-error":
+
+          return (
+            "Firebase could not complete the verification request. " +
+            "Retry the security check."
+          );
+
+
+        default:
+
+          return (
+            error?.message ||
+            "Firebase phone verification failed."
+          );
+
+      }
+
+    }
+
+
+    // -----------------------------------------
+    // SEND OTP
+    // -----------------------------------------
+
+    async function sendOtp() {
+
+      if (!auth) {
+
+        setStatus(
+          "Firebase Auth is not ready.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      if (!verifier) {
+
+        await createVerifier();
+
+        return;
+      }
+
+
+      setLoading(true);
+
+      retryButton.classList.add("hidden");
+
+      helpBox.style.display = "none";
+
+
+      setStatus(
+        "Requesting OTP from Firebase…",
+        "info"
+      );
+
+
+      try {
+
+        const confirmation =
+          await signInWithPhoneNumber(
+            auth,
+            phone,
+            verifier
+          );
+
+
+        setStatus(
+          "OTP request created successfully. Returning to LYRx…",
+          "success"
+        );
+
+
+        const target =
+          new URL(callback);
+
+
+        target.searchParams.set(
+          "state",
+          state
+        );
+
+
+        target.searchParams.set(
+          "verification_id",
+          confirmation.verificationId
+        );
+
+
+        window.location.replace(
+          target.toString()
+        );
+
+      }
+
+      catch (error) {
+
+        const message =
+          friendlyFirebaseError(error);
+
+
+        setStatus(
+          message,
+          "error"
+        );
+
+
+        retryButton.classList.remove(
+          "hidden"
+        );
+
+
+        clearVerifier();
+
+
+        setLoading(false);
+
+      }
+
+    }
+
+
+    // -----------------------------------------
+    // RETRY
+    // -----------------------------------------
+
+    async function retryVerification() {
+
+      retryButton.classList.add("hidden");
+
+      helpBox.style.display = "none";
+
+      setLoading(true);
+
+
+      try {
+
+        await createVerifier();
+
+      }
+
+      catch (error) {
+
+        setStatus(
+          friendlyFirebaseError(error),
+          "error"
+        );
+
+      }
+
+      finally {
+
+        setLoading(false);
+
+      }
+
+    }
+
+
+    // -----------------------------------------
+    // BACK TO APP
+    // -----------------------------------------
+
+    function backToApp() {
+
+      if (!callback) {
+
+        window.history.back();
+
+        return;
+
+      }
+
+
+      try {
+
+        const target =
+          new URL(callback);
+
+
+        target.searchParams.set(
+          "state",
+          state
+        );
+
+
+        target.searchParams.set(
+          "cancelled",
+          "1"
+        );
+
+
+        window.location.replace(
+          target.toString()
+        );
+
+      }
+
+      catch (_) {
+
+        window.history.back();
+
+      }
+
+    }
+
+
+    // -----------------------------------------
+    // START
+    // -----------------------------------------
+
+    async function start() {
+
+      if (!requestIsValid()) {
+
+        setStatus(
+          "The LYRx verification request is incomplete. " +
+          "Return to the app and try again.",
+          "error"
+        );
+
+
+        sendButton.disabled = true;
+
+        retryButton.disabled = true;
+
+        return;
+
+      }
+
+
+      try {
+
+        const app =
+          initializeApp({
+
+            apiKey,
+
+            authDomain,
+
+            projectId
+
+          });
+
+
+        auth =
+          getAuth(app);
+
+
+        auth.useDeviceLanguage();
+
+
+        await createVerifier();
+
+      }
+
+      catch (error) {
+
+        setStatus(
+          friendlyFirebaseError(error),
+          "error"
+        );
+
+
+        retryButton.classList.remove(
+          "hidden"
+        );
+
+      }
+
+    }
+
+
+    // -----------------------------------------
+    // EVENTS
+    // -----------------------------------------
+
+    sendButton.addEventListener(
+      "click",
+      sendOtp
+    );
+
+
+    retryButton.addEventListener(
+      "click",
+      retryVerification
+    );
+
+
+    backButton.addEventListener(
+      "click",
+      backToApp
+    );
+
+
+    // -----------------------------------------
+    // INIT
+    // -----------------------------------------
+
+    start();
+
   </script>
+
 </body>
 </html>
